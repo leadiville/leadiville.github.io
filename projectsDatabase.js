@@ -10,8 +10,14 @@ const projects = {
         images: ["assets/img/portfolio/desktop/NT-customize.png", "assets/img/portfolio/desktop/NT-home.png", "assets/img/portfolio/desktop/NT-outfit-custom.png"],
         tools: ["HTML", "CSS", "Javascript"],
         solutions: [
-            
+            "Digitized the traditional tailoring process by allowing customers to submit measurements and customize clothing online.",
+            "Developed dynamic forms that support complex clothing configuration workflows and personalized orders.",
+            "Improved user onboarding and account management through authentication and profile management features.",
+            "Contributed to backend APIs supporting customer accounts, order management, and business operations.",
+            "Enhanced platform security and user experience through NextAuth authentication integration.",
+            "Assisted in payment workflow implementation and issue resolution to improve transaction reliability."
         ]
+
     },
     fenuaza: {
         title: "Fenuaza",
@@ -23,7 +29,12 @@ const projects = {
         images: ["/assets/img/portfolio/desktop/FEN-category.png", "/assets/img/portfolio/desktop/FEN-color-page.png", "/assets/img/portfolio/desktop/FEN-home.png"],
         tools: ["HTML", "CSS", "Javascript"],
         solutions: [
-
+            "Designed and launched a complete ecommerce platform for a paint manufacturer, enabling customers to browse, compare, and purchase products online.",
+            "Improved product discovery through category-based and color-based filtering, helping customers find suitable paint products faster.",
+            "Created a responsive shopping experience optimized for desktop, tablet, and mobile users.",
+            "Integrated secure online payment processing, reducing manual order handling and improving customer convenience.",
+            "Customized WooCommerce functionality and styling using PHP and CSS to create a premium user experience without relying on excessive plugins.",
+            "Improved site navigation and information architecture to support both retail and bulk paint purchases."
         ]
     },
     avataworks: {
@@ -36,7 +47,12 @@ const projects = {
         images: ["/assets/img/portfolio/desktop/AV-team.png", "/assets/img/portfolio/desktop/AV-work-hitl.png", "/assets/img/portfolio/desktop/AV-home.png"],
         tools: ["HTML", "CSS", "Javascript"],
         solutions: [
-
+            "Eliminated manual visitor tracking by creating a centralized system for managing church first-time visitors.",
+            "Built role-based administrative workflows that allow task assignment, reassignment, and progress tracking across teams.",
+            "Developed dashboard reporting tools that improve visibility into visitor engagement and follow-up activities.",
+            "Designed a relational database structure capable of handling complex relationships between visitors, administrators, and follow-up records.",
+            "Reduced administrative overhead by automating first-timer registration and workflow management processes.",
+            "Containerized the application using Docker to improve deployment consistency and development efficiency."
         ]
     },
     deeternex: {
@@ -49,7 +65,11 @@ const projects = {
         images: ["/assets/img/portfolio/desktop/Deet-homepage.png", "/assets/img/portfolio/desktop/Deet.products-home.png", "/assets/img/portfolio/desktop/Deet-category.png"],
         tools: ["HTML", "CSS", "Javascript"],
         solutions: [
-
+            "Developed and maintained an ecommerce platform for an electronics retailer, improving the company's online presence and product accessibility.",
+            "Organized product information and shopping workflows to support customer purchasing decisions.",
+            "Implemented ongoing website maintenance, content updates, and platform improvements.",
+            "Improved usability and site reliability through continuous optimization and support.",
+            "Assisted in creating a scalable foundation for future ecommerce growth."
         ]
     }
 }
@@ -68,7 +88,8 @@ const client = document.getElementById("projectClient");
 const solution = document.getElementById("projectSolu");
 const date = document.getElementById("projectDate");
 const images = document.getElementById("projectImage");
-const imgContainer = document.getElementById('imageContainer')
+const imgContainer = document.getElementById('imageContainer');
+const solutionList = document.getElementById('projectSolu');
 // console.log(page);
 
 if (!currentProject) {
@@ -82,7 +103,7 @@ else {
     };
     cat && (cat.innerText = currentProject.category);
     client && (client.innerText = currentProject.title);
-    if(currentProject.solutions) {
+    if (currentProject.solutions) {
         const li = document.createElement('li');
         currentProject.solutions.forEach((solution) => {
             li.appendChild(solution);
@@ -96,10 +117,17 @@ else {
             const imgSwiperDiv = document.createElement('div');
             imgSwiperDiv && (imgSwiperDiv.className = "swiper-slide");
             const imgElement = document.createElement('img');
-            imgElement.src = img;   
+            imgElement.src = img;
             imgElement.alt = currentProject.title;
             imgSwiperDiv.appendChild(imgElement);
             imgContainer.appendChild(imgSwiperDiv);
         })
+    }
+    if (currentProject.solutions) {
+        currentProject.solutions.forEach(each => {
+            let li = document.createElement('li');
+            li.appendChild(each);
+        });
+        solutionList.appendChild(currentProject.solutions);
     }
 }
