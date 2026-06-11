@@ -2,39 +2,55 @@
 const projects = {
     neighbortailor: {
         title: "Neighbortailor",
+        project: "Neighbortailor",
         category: "Fashion and E-commerce",
         date: "1st september 2025 - 30th december 2025",
         projectLink: "www.neighbortailor.com",
         description: "Built the most beautifyl systalsj alorem epism",
         images: ["assets/img/portfolio/desktop/NT-customize.png", "assets/img/portfolio/desktop/NT-home.png", "assets/img/portfolio/desktop/NT-outfit-custom.png"],
         tools: ["HTML", "CSS", "Javascript"],
+        solutions: [
+            
+        ]
     },
     fenuaza: {
-        title: "Fenuaza Premium Paints",
+        title: "Fenuaza",
+        project: "Fenuaza Premium Paints",
         category: "Design and E-commerce",
         date: "3rd feb 2026 - 3rd april 2025",
         projectLink: "www.fenuaza.com",
         description: "",
         images: ["/assets/img/portfolio/desktop/FEN-category.png", "/assets/img/portfolio/desktop/FEN-color-page.png", "/assets/img/portfolio/desktop/FEN-home.png"],
         tools: ["HTML", "CSS", "Javascript"],
+        solutions: [
+
+        ]
     },
     avataworks: {
-        title: "Avataworks Digital Agency",
+        title: "Avataworks",
+        project: "Avataworks Digital Agency",
         category: "Digital Marketing Website",
         date: "1st feb 2025 - 28th july 2025",
         projectLink: "www.avataworks.com",
         description: "",
         images: ["/assets/img/portfolio/desktop/AV-team.png", "/assets/img/portfolio/desktop/AV-work-hitl.png", "/assets/img/portfolio/desktop/AV-home.png"],
         tools: ["HTML", "CSS", "Javascript"],
+        solutions: [
+
+        ]
     },
     deeternex: {
-        title: "De-eternex Electronics Store",
+        title: "De-eternex",
+        project: "De-eternex Electronics Store",
         category: "Electronics and E-commerce",
         date: "25th jan 2025 - 30th december 2025",
         projectLink: "www.deeternex.com",
         description: "",
         images: ["/assets/img/portfolio/desktop/Deet-homepage.png", "/assets/img/portfolio/desktop/Deet.products-home.png", "/assets/img/portfolio/desktop/Deet-category.png"],
         tools: ["HTML", "CSS", "Javascript"],
+        solutions: [
+
+        ]
     }
 }
 
@@ -49,7 +65,7 @@ const title = document.getElementById("projectTitle");
 const url = document.getElementById("projectUrl");
 const cat = document.getElementById("projectCat");
 const client = document.getElementById("projectClient");
-const body = document.getElementById("projectBody");
+const solution = document.getElementById("projectSolu");
 const date = document.getElementById("projectDate");
 const images = document.getElementById("projectImage");
 const imgContainer = document.getElementById('imageContainer')
@@ -66,7 +82,13 @@ else {
     };
     cat && (cat.innerText = currentProject.category);
     client && (client.innerText = currentProject.title);
-    body && (body.innerText = currentProject.description);
+    if(currentProject.solutions) {
+        const li = document.createElement('li');
+        currentProject.solutions.forEach((solution) => {
+            li.appendChild(solution);
+        })
+        solution.appendChild(li);
+    }
     date && (date.innerText = currentProject.date);
     if (imgContainer && currentProject.images) {
         imgContainer.innerHTML = "";
