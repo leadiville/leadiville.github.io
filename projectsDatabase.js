@@ -7,7 +7,7 @@ const projects = {
         date: "1st september 2025 - 30th december 2025",
         projectLink: "www.neighbortailor.com",
         description: "Built the most beautifyl systalsj alorem epism",
-        images: ["assets/img/portfolio/desktop/NT-customize.png", "assets/img/portfolio/desktop/NT-home.png", "assets/img/portfolio/desktop/NT-outfit-custom.png"],
+        images: ["assets/img/portfolio/desktop/NT-customize.png", "assets/img/portfolio/desktop/NT-home.png", "/assets/img/portfolio/desktop/NT-login.png"],
         tools: ["HTML", "CSS", "Javascript"],
         solutions: [
             "Digitized the traditional tailoring process by allowing customers to submit measurements and customize clothing online.",
@@ -93,41 +93,52 @@ const solutionList = document.getElementById('projectSolu');
 // console.log(page);
 
 if (!currentProject) {
-    title && (title.innerText = "Project Not Found");
-}
-else {
-    title && (title.innerText = currentProject.title);
+    if (title) title.innerText = "Project Not Found";
+} else {
+    if (title) title.innerText = currentProject.title;
+    
     if (url) {
         url.innerText = currentProject.projectLink;
         url.href = `https://${currentProject.projectLink}`;
-    };
-    cat && (cat.innerText = currentProject.category);
-    client && (client.innerText = currentProject.title);
-    if (currentProject.solutions) {
-        const li = document.createElement('li');
-        currentProject.solutions.forEach((solution) => {
-            li.appendChild(solution);
-        })
-        solution.appendChild(li);
     }
-    date && (date.innerText = currentProject.date);
+    
+    // Use innerHTML or template literals to preserve the <strong> tags in your HTML
+    if (cat) cat.innerHTML = `<strong>Category</strong>: ${currentProject.category}`;
+    if (client) client.innerHTML = `<strong>Client</strong>: ${currentProject.project}`;
+    if (date) date.innerHTML = `<strong>Project date</strong>: ${currentProject.date}`;
+    
+    // Fix: Clear and properly build the image slider
     if (imgContainer && currentProject.images) {
         imgContainer.innerHTML = "";
         currentProject.images.forEach(img => {
             const imgSwiperDiv = document.createElement('div');
-            imgSwiperDiv && (imgSwiperDiv.className = "swiper-slide");
+            imgSwiperDiv.className = "swiper-slide";
+            
             const imgElement = document.createElement('img');
             imgElement.src = img;
             imgElement.alt = currentProject.title;
+            imgElement.className = "img-fluid"; // keeps images responsive
+            
             imgSwiperDiv.appendChild(imgElement);
             imgContainer.appendChild(imgSwiperDiv);
-        })
+        });
+
+        // CRITICAL FIX: Re-initialize Swiper so it recognizes the newly injected images
+        if (typeof Swiper !== 'undefined') {
+            const swiperEl = document.querySelector('.init-swiper');
+            if (swiperEl && swiperEl.swiper) {
+                swiperEl.swiper.update(); // Updates existing swiper instance
+            }
+        }
     }
-    if (currentProject.solutions) {
+    
+    // Fix: Properly loop and append string data to the solution list
+    if (solutionList && currentProject.solutions) {
+        solutionList.innerHTML = ""; // Clear out old items
         currentProject.solutions.forEach(each => {
             let li = document.createElement('li');
-            li.appendChild(each);
+            li.textContent = each; // Use textContent for strings, not appendChild()
+            solutionList.appendChild(li);
         });
-        solutionList.appendChild(currentProject.solutions);
     }
 }
