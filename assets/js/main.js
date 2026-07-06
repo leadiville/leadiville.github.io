@@ -231,13 +231,32 @@
 // submit contact form //
 document.getElementById('contact-form').addEventListener('submit', function(e) { 
   e.preventDefault();
+   Swal.fire({
+        title: 'Sending...',
+        text: 'Please wait while your message is being sent.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
   // Handle form submission logic here
   emailjs.sendForm('contact_service', 'contact_form', this)
     .then(function() {
       // Form submission successful
-      console.log('Form submitted successfully!');
+      Swal.fire({
+                icon: 'success',
+                title: 'Message Sent!',
+                text: 'Thank you for reaching out. I will get back to you soon!',
+                confirmButtonColor: '#3085d6'
+            });
     }, function(error) {
       // Form submission failed
-      console.error('Form submission failed:', error);
+       Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong! Please try again later.',
+                footer: `Error details: ${JSON.stringify(error)}`,
+                confirmButtonColor: '#d33'
+            });
     });
 });
