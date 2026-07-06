@@ -227,3 +227,17 @@
   document.addEventListener('scroll', navmenuScrollspy);
 
 })();
+
+// submit contact form //
+document.getElementById('contact-form').addEventListener('submit', function(e) { 
+  e.preventDefault();
+  // Handle form submission logic here
+  emailjs.sendForm('contact_service', 'contact_form', this)
+    .then(function() {
+      // Form submission successful
+      console.log('Form submitted successfully!');
+    }, function(error) {
+      // Form submission failed
+      console.error('Form submission failed:', error);
+    });
+});
