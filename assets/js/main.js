@@ -230,57 +230,76 @@ document.addEventListener('scroll', navmenuScrollspy);
 
 // submit contact form //
 
-// 1. Initialize EmailJS using your Public Key immediately on script load
+// Ensure EmailJS is initialized with your public key at the top of the file
 (function() {
   emailjs.init({
-    publicKey: "aHzOb2Ohz3gBS63Q1", // Replace with your actual EmailJS Public Key
+    publicKey: "aHzOb2Ohz3gBS63Q1", 
   });
 })();
 
-// 2. Fetch the form element and its submit button using your HTML IDs/selectors
 const contactForm = document.getElementById('contact-form');
-// Finds the button inside your text-center wrapper div
 const submitBtn = contactForm.querySelector('button[type="submit"]'); 
 
-// 3. Attach the submission listener
 contactForm.addEventListener('submit', function(event) {
-  // Stop the browser from instantly reloading the page
-  event.preventDefault();
+    event.preventDefault();
 
-    // UX Best Practice: Disable the button to block spam duplicate clicks
     const originalButtonText = submitBtn.textContent;
     submitBtn.textContent = 'Sending Message...';
     submitBtn.disabled = true;
 
-    // Define your dashboard IDs
-    const serviceID = 'service_nwu58g6'; // Replace with your Service ID
-    const templateID = 'template_jhuffbm'; // Replace with your Template ID
+    // Define your exact Dashboard IDs
+    const serviceID = 'service_nwu58g6'; 
+    const mainContactTemplateID = 'template_3ht0hrk'; // Your main notification template
+    const autoReplyTemplateID = 'template_jhuffbm'; // REPLACE WITH YOUR ACTUAL AUTO-REPLY TEMPLATE ID
 
-    // Send the entire form element context ("this") straight to the API
-    emailjs.sendForm(serviceID, templateID, this)
+    // Gather your Bootstrap form input values
+    const userEmail = contactForm.querySelector('[name="email"]').value;
+    const userName = contactForm.querySelector('[name="name"]').value;
+    const userSubject = contactForm.querySelector('[name="subject"]').value;
+    const userMessage = contactForm.querySelector('[name="message"]').value;
+
+    // Payload 1: Sends the visitor's submission straight to your inbox
+    const contactParams = {
+        name: userName,
+        email: userEmail,
+        subject: userSubject,
+        message: userMessage
+    };
+
+    emailjs.send(serviceID, mainContactTemplateID, contactParams)
         .then(() => {
-            // Execution on Success
-            swal.fire({ 
+            // Payload 2: Fires a clean, separate delivery chain to the user
+            // This treats the auto-reply as a standalone event, restoring your clean inbox delivery!
+            const replyParams = {
+                to_name: userName,
+                to_email: userEmail, // Maps explicitly to the user's destination
+                // Add a permanent fallback URL for your image variable here if needed:
+                logo_url: "../assets/img/profile-img3.jpg" // Ensure this is a valid URL accessible to the user
+            };
+
+            // Fire the second email template explicitly
+            return emailjs.send(serviceID, autoReplyTemplateID, replyParams);
+        })
+        .then(() => {
+            // Executed only after BOTH emails send successfully
+            Swal.fire({ 
               title: 'Message Sent Successfully!',
-              text: 'Thank you for reaching out. I will get back to you as soon as possible.',
+              text: 'Thank you for reaching out. A confirmation has been sent to your inbox.',
               icon: 'success',
               confirmButtonText: 'OK'
             });
-            }).then(() => {
-            contactForm.reset(); // Safely clears out all inputs for the next entry
+            contactForm.reset(); 
         })
         .catch((error) => {
-            // Execution on Error
-            console.error('EmailJS Error Encountered:', error);
-            swal.fire({ 
-              title: 'Failed to Send Message!',
-              text: 'Oops! Failed to deliver message. Please check your connection and try again.',
-              icon: 'error',
+            console.error('Email Delivery Error:', error);
+            Swal.fire({ 
+              title: 'Delivery Warning',
+              text: 'Your message went through, but we had trouble delivering the confirmation layout.',
+              icon: 'warning',
               confirmButtonText: 'OK'
             });
         })
         .finally(() => {
-            // Always restore the button to operational status, even if the API failed
             submitBtn.textContent = originalButtonText;
             submitBtn.disabled = false;
         });
