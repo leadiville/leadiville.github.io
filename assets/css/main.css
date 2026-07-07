@@ -1307,3 +1307,8 @@ section,
 .journey-ul li {
   padding-bottom: 5px !important;
 }
+.isotope-container {
+  position: relative;
+  overflow: hidden;
+  height: 200px !important;
+}

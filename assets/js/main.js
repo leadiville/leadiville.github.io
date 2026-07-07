@@ -260,13 +260,24 @@ contactForm.addEventListener('submit', function(event) {
     emailjs.sendForm(serviceID, templateID, this)
         .then(() => {
             // Execution on Success
-            alert('Your message has been sent successfully!');
+            swal.fire({ 
+              title: 'Message Sent Successfully!',
+              text: 'Thank you for reaching out. I will get back to you as soon as possible.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+            }).then(() => {
             contactForm.reset(); // Safely clears out all inputs for the next entry
         })
         .catch((error) => {
             // Execution on Error
             console.error('EmailJS Error Encountered:', error);
-            alert('Oops! Failed to deliver message. Please check your connection and try again.');
+            swal.fire({ 
+              title: 'Failed to Send Message!',
+              text: 'Oops! Failed to deliver message. Please check your connection and try again.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
         })
         .finally(() => {
             // Always restore the button to operational status, even if the API failed
