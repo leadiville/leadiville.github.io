@@ -229,34 +229,48 @@
 })();
 
 // submit contact form //
-document.getElementById('contact-form').addEventListener('submit', function(e) { 
-  e.preventDefault();
-   Swal.fire({
-        title: 'Sending...',
-        text: 'Please wait while your message is being sent.',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
+
+// 1. Initialize EmailJS using your Public Key immediately on script load
+(function() {
+    emailjs.init({
+        publicKey: "aHzOb2Ohz3gBS63Q1", // Replace with your actual EmailJS Public Key
     });
-  // Handle form submission logic here
-  emailjs.sendForm('contact_service', 'contact_form', this)
-    .then(function() {
-      // Form submission successful
-      Swal.fire({
-                icon: 'success',
-                title: 'Message Sent!',
-                text: 'Thank you for reaching out. I will get back to you soon!',
-                confirmButtonColor: '#3085d6'
-            });
-    }, function(error) {
-      // Form submission failed
-       Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong! Please try again later.',
-                footer: `Error details: ${JSON.stringify(error)}`,
-                confirmButtonColor: '#d33'
-            });
-    });
+})();
+
+// 2. Fetch the form element and its submit button using your HTML IDs/selectors
+const contactForm = document.getElementById('contact-form');
+// Finds the button inside your text-center wrapper div
+const submitBtn = contactForm.querySelector('button[type="submit"]'); 
+
+// 3. Attach the submission listener
+contactForm.addEventListener('submit', function(event) {
+    // Stop the browser from instantly reloading the page
+    event.preventDefault();
+
+    // UX Best Practice: Disable the button to block spam duplicate clicks
+    const originalButtonText = submitBtn.textContent;
+    submitBtn.textContent = 'Sending Message...';
+    submitBtn.disabled = true;
+
+    // Define your dashboard IDs
+    const serviceID = 'service_nwu58g6'; // Replace with your Service ID
+    const templateID = 'template_jhuffbm'; // Replace with your Template ID
+
+    // Send the entire form element context ("this") straight to the API
+    emailjs.sendForm(serviceID, templateID, this)
+        .then(() => {
+            // Execution on Success
+            alert('Your message has been sent successfully!');
+            contactForm.reset(); // Safely clears out all inputs for the next entry
+        })
+        .catch((error) => {
+            // Execution on Error
+            console.error('EmailJS Error Encountered:', error);
+            alert('Oops! Failed to deliver message. Please check your connection and try again.');
+        })
+        .finally(() => {
+            // Always restore the button to operational status, even if the API failed
+            submitBtn.textContent = originalButtonText;
+            submitBtn.disabled = false;
+        });
 });
