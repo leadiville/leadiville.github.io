@@ -240,7 +240,7 @@ document.addEventListener('scroll', navmenuScrollspy);
 const contactForm = document.getElementById('contact-form');
 const submitBtn = contactForm.querySelector('button[type="submit"]'); 
 
-contactForm.addEventListener('submit', function(event) {
+contactForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const originalButtonText = submitBtn.textContent;
@@ -249,8 +249,8 @@ contactForm.addEventListener('submit', function(event) {
 
     // Define your exact Dashboard IDs
     const serviceID = 'service_nwu58g6'; 
-    const mainContactTemplateID = 'template_3ht0hrk'; // Your main notification template
-    const autoReplyTemplateID = 'template_jhuffbm'; // REPLACE WITH YOUR ACTUAL AUTO-REPLY TEMPLATE ID
+    const mainContactTemplateID = 'template_3ht0hrk'; 
+    const autoReplyTemplateID = 'template_jhuffbm';   
 
     // Gather your Bootstrap form input values
     const userEmail = contactForm.querySelector('[name="email"]').value;
@@ -265,42 +265,52 @@ contactForm.addEventListener('submit', function(event) {
         subject: userSubject,
         message: userMessage
     };
+    Swal.fire({
+        title: 'Sending Message...',
+        text: 'Please wait while we process your request.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
-    emailjs.send(serviceID, mainContactTemplateID, contactParams)
-        .then(() => {
-            // Payload 2: Fires a clean, separate delivery chain to the user
-            // This treats the auto-reply as a standalone event, restoring your clean inbox delivery!
-            const replyParams = {
-                to_name: userName,
-                to_email: userEmail, // Maps explicitly to the user's destination
-                // Add a permanent fallback URL for your image variable here if needed:
-                logo_url: "../assets/img/profile-img3.jpg" // Ensure this is a valid URL accessible to the user
-            };
-
-            // Fire the second email template explicitly
-            return emailjs.send(serviceID, autoReplyTemplateID, replyParams);
-        })
-        .then(() => {
-            // Executed only after BOTH emails send successfully
-            Swal.fire({ 
-              title: 'Message Sent Successfully!',
-              text: 'Thank you for reaching out. A confirmation has been sent to your inbox.',
-              icon: 'success',
-              confirmButtonText: 'OK'
-            });
-            contactForm.reset(); 
-        })
-        .catch((error) => {
-            console.error('Email Delivery Error:', error);
-            Swal.fire({ 
-              title: 'Delivery Warning',
-              text: 'Your message went through, but we had trouble delivering the confirmation layout.',
-              icon: 'warning',
-              confirmButtonText: 'OK'
-            });
-        })
-        .finally(() => {
-            submitBtn.textContent = originalButtonText;
-            submitBtn.disabled = false;
+    try {
+        // 1. Run and await the primary notification email to your inbox
+        await emailjs.send(serviceID, mainContactTemplateID, contactParams);
+        
+        // SUCCESS: The main email sent! Show the SweetAlert popup instantly.
+        Swal.fire({ 
+          title: 'Message Sent Successfully!',
+          text: 'Thank you for reaching out. A confirmation has been sent to your inbox.',
+          icon: 'success',
+          confirmButtonText: 'OK'
         });
+        
+        contactForm.reset(); // Safely clear out input text fields
+
+        // 2. Setup the background payload using a secure asset URL instead of a relative path
+        const replyParams = {
+            name: userName,
+            email: userEmail, 
+            logo_url: "https://placeholder.com" 
+        };
+
+        // Fire the second template quietly in the background without blocking the UI
+        emailjs.send(serviceID, autoReplyTemplateID, replyParams)
+            .catch(err => console.warn("Background auto-reply failed, but the primary email and alert went through cleanly:", err));
+
+    } catch (error) {
+        // Fallback error catcher if the primary connection to EmailJS drops
+        console.error('Email Delivery Error Encountered:', error);
+        Swal.fire({ 
+          title: 'Delivery Warning',
+          text: 'Oops! Failed to deliver message. Please check your connection or dashboard settings.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+    } finally {
+        // Restore the interactive form button state
+        submitBtn.textContent = originalButtonText;
+        submitBtn.disabled = false;
+    }
 });
