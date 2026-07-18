@@ -51,7 +51,35 @@
   --surface-color: #151f2b;
   --contrast-color: #ffffff;
 }
-
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  border: 2px solid white;
+  transition: all 0.6s ease-in-out;
+}
+.btn-primary a {
+  color: white;
+}
+.btn-primary:hover a {
+  color: var(--accent-color) !important;
+}
+.text-primary{
+  color: var(--accent-color);
+}
+.text-primary-dark {
+  color: var(--surface-color);
+}
+.btn-primary:hover {
+  color: var(--accent-color);
+  background-color: white;
+  border: 2px solid var(--accent-color);
+}
+.view-project {
+  transition: all 0.6s ease-in-out;
+}
+.view-project:hover {
+  background-color: var(--accent-color);
+}
 /* Smooth scroll */
 :root {
   scroll-behavior: smooth;
@@ -546,7 +574,7 @@ section,
 }
 .section-title h2:after {
   content: "";
-  position: absolute;
+  position: relative;
   display: block;
   width: 50px;
   height: 3px;
@@ -554,6 +582,17 @@ section,
   left: 0;
   bottom: 0;
 }
+.portfolio .section-title h2:after {
+  content: "";
+  position: relative;
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: var(--accent-color);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 .section-title p {
   margin-bottom: 0;
@@ -564,12 +603,16 @@ section,
 --------------------------------------------------------------*/
 .hero {
   width: 100%;
-  min-height: 100vh;
+  height: max-content;
   position: relative;
-  padding: 80px 0;
+  /* padding: 80px 0; */
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: url("/assets/img/Website-and-App-developer-Canva-Picture.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .hero img {
@@ -1300,10 +1343,16 @@ section,
   margin-right: 8px;
   color: var(--accent-color);
 }
-
+.contact h2::after {
+  margin-left: auto !important;
+  margin-right: auto ;
+}
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
 .journey-ul li {
   padding-bottom: 5px !important;
+}
+.typed {
+  color: var(--accent-color);
 }
